@@ -51,7 +51,7 @@ $ podman push jpommspringbootaks.azurecr.io/springboot-app:latest
 Verifica que la imagen esta en el ACR
 $ az acr repository list --name jpommspringbootaks --output table
 
-# CONECTARNOS A CLUSTER DE KUBERNETES EN AZURE
+# DESPLEGAR A CLUSTER DE KUBERNETES EN AZURE
 Nos conectamos al cluster
 $ az aks get-credentials --resource-group jpommResourceGroup --name jpommAKSCluster
 
@@ -72,14 +72,5 @@ $ kubectl get svc
 Dar permisos de salida de puerto 8080 al security group
 $ az network nsg rule create --resource-group jpommResourceGroup --nsg-name jpommNSG --name AllowHTTP --priority 100 --direction Inbound --access Allow --protocol Tcp --destination-port-ranges 80
 
-
-
-
-
-
-
-
-
-DESPLEGAR EN KUBERNETES
 
 
