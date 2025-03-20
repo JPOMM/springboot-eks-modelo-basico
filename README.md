@@ -27,6 +27,7 @@ $ az account set --subscription bd4eff48-e10b-4bbf-a864-b5ba10bb8f2a
 Creas un registo en Azure
 $ az acr create --name jpommspringbootaks --resource-group jpomm-registry-rg --sku Basic
 
+
 Verificar si el registro fue creado 
 $ az acr list --output table
      login server:  jpommspringbootaks.azurecr.io
@@ -50,7 +51,26 @@ $ podman push jpommspringbootaks.azurecr.io/springboot-app:latest
 Verifica que la imagen esta en el ACR
 $ az acr repository list --name jpommspringbootaks --output table
 
+# CONECTARNOS A CLUSTER DE KUBERNETES EN AZURE
+Nos conectamos al cluster
+$ az aks get-credentials --resource-group jpommResourceGroup --name jpommAKSCluster
 
+Aplicamos el deployment
+$ kubectl apply -f k8s.yaml
+    deployment.apps/myapp created                                                                                                                                                        
+    service/myapp-service created   
+
+Atachar el ACR con el cluster de kubernetes
+$ az aks update -n <nombre-del-cluster> -g <nombre-del-grupo> --attach-acr jpommspringbootaks
+$ az aks update -n jpommAKSCluster -g jpommResourceGroup --attach-acr jpommspringbootaks
+$ kubectl delete pod --all
+$ kubectl rollout restart deployment myapp
+
+Varificamos la conexion exterma:
+$ kubectl get svc
+
+Dar permisos de salida de puerto 8080 al security group
+$ az network nsg rule create --resource-group jpommResourceGroup --nsg-name jpommNSG --name AllowHTTP --priority 100 --direction Inbound --access Allow --protocol Tcp --destination-port-ranges 80
 
 
 
